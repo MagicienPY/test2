@@ -1,0 +1,144 @@
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+
+
+<style>
+  body {
+    background-color: #4b05bb;
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+    margin: 0px;
+    padding: 0px;
+  }
+
+
+  div {
+    border-style: solid;
+    margin: 0px;
+    padding: 0px;
+    border-width: thin;
+    overflow: hidden;
+  }
+
+  .toolIcon {
+    filter: grayscale(0%);
+  }
+
+  .toolIcon:hover {
+    background-color: rgb(81, 212, 20);
+  }
+
+  .toolIconDisabled {
+    filter: grayscale(100%);
+  }
+
+  ::-webkit-scrollbar {
+    -webkit-appearance: none;
+    width: 25px;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    border-radius: 25px;
+    background-color: rgba(4, 24, 88, 0.5);
+    -webkit-box-shadow: 0 0 1px rgba(158, 14, 241, 0.5);
+  }
+</style>
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+
+<div style="width:calc(100% - 0px); height:calc(100% - 0px);" onclick="$('#toolBarRightClickMenue').hide();">
+  <div style="width:calc(100% - 0px); height: 145px; ">
+
+    <select id="commands" onchange="doCommand(this.value);"></select> Workbench:
+    <select id="currentWorkbench" onchange="setActiveWorkbench(this.value);"></select>
+    <button onclick="$('#fileManager').show();$('#fileManagerIframe').attr('src', './files/');">fichier de configuration</button>
+    <button onclick="$('#pythonConsole').show()">Console Python</button>
+
+
+    <div id="commandIcons" style="font-size: 12px; width:calc(100% - 0px); height: 120px; overflow:scroll; overflow-y: hidden; border-style: dotted;white-space: nowrap;" oncontextmenu="
+    groupListIconRightClick(null ,null , event);
+    return false;
+    
+    ">
+      <h1>mis en exament . pacientez svp </h1>
+    </div>
+  </div>
+
+  <div id="application" style="height:calc(100% - 160px); width:calc(100% - 2px); padding:0px;">
+
+  </div>
+  <div id="settings" style="height:calc(100% - 160px); width:calc( 100% - 0px); overflow: scroll;">
+    <button onclick='currentAplicationMode = "app"; $("#settings").hide(); $("#application").show();buildToolGroupPalletDivs();'>Close Icon Editor</button>
+    <br>
+
+    <div id="commandsEditorList" style="height:calc(100% - 50px); width:300px; overflow-y: scroll;  display: inline-block;"></div>
+    <div id="iconEditor" style="height:calc(100% - 50px); width:calc(100% - 310px); overflow-y: scroll;  display: inline-block;">
+      <h3>Icon Editor Selected Icon Properties</h3>
+      <h3>Icons from left can be dragged and dropped on to toolbar groups</h3>
+      <input id="commandEditor_id" disabled> num de commandes <br>
+      <input id="commandEditor_command" disabled> Commande<br>
+      <input id="commandEditor_iconFile"> icon <br>
+      <input id="commandEditor_toolTip"> toolTip<br>
+      <button onclick="saveCommandIcon();">Sauvegarde</button>
+      <div id="iconPalletForSettings" style="width:100%; height:calc(100% - 240px); overflow-y: scroll;"></div>
+    </div>
+
+  </div>
+</div>
+
+
+
+<div id="toolBarRightClickMenue" style="position: fixed;
+  top: 100px;
+  left: 200px;
+  border: 3px solid rgb(38, 236, 11);
+  background-color: white;
+  width:200px;">
+</div>
+
+<div id="fileManager" style="position: fixed;
+  top: 25px;
+  left: 25px;
+  bottom: 25px;
+  right: 25px;
+  border: 3px solid RED;
+  background-color: white;">
+  <button onclick="$('#fileManagerIframe').attr('src', './files/');">actualiser</button>
+  <button onclick="$('#fileManager').hide()" style="position:Absolute;right:0px; top:0px; background-color:red; ">sortir</button>
+  <br>
+  <div style="position:Absolute; top:25px; bottom:0px; left:0px;right:0px;">
+    <iframe id="fileManagerIframe" src="./files/" style="width:100%; height:100%;"></iframe>
+  </div>
+
+</div>
+
+
+<div id="pythonConsole" style="position: fixed;
+  top: 25px;
+  left: 25px;
+  bottom: 25px;
+  right: 25px;
+  border: 3px solid RED;
+  background-color: white;">
+  <button onclick="runPythonConsole(false);" style="top:50px;height:50px;">effacer</button>
+  <textarea id="pythonCodeArea" style="top:50px;height:50px;width:calc(100% - 150px);">print("hello world")</textarea>
+
+
+  <button onclick="runPythonConsole();" style="top:50px;height:50px;">Envoyer</button>
+  <button onclick="$('#pythonConsole').hide()" style="position:Absolute;right:0px; top:0px; background-color:red; "> retour</button>
+  <br>
+  <div style="position:Absolute; top:100px; bottom:0px; left:0px;right:0px">
+    <div id="pythonCodeResponseAreaA" style="width:100%;height:50%;white-space:pre;overflow:scroll;font-family: monospace;"></div>
+    <div id="pythonCodeResponseAreaB" style="width:100%;height:50%;white-space:pre;overflow:scroll;font-family: monospace;"></div>
+  </div>
+
+
+
+</div>
+
+
+
+
+<script src="./FC-APP.js"></script>

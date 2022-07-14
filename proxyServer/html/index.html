@@ -1,0 +1,107 @@
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+
+<style>
+    .overlay {
+        display: none;
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        background-color: rgb(48, 13, 129);
+        top: 0px;
+        left: 0px;
+        padding: 10px;
+        opacity: .8;
+    }
+</style>
+
+<div id="loading" class="overlay"> <img src="./loading.gif"> </div>
+
+<h1>verification</h1>
+
+<div id="login">
+    <input id="username" value="test">
+    <br>
+    <button onclick="login()">se connecter</button>
+    <button onclick="createUser()">Creer un utilisateur</button>
+</div>
+
+
+<div id="userFunctions">
+    <button onclick="startNewSession()">Nouvelle session</button>
+    <button onclick="listSessions()">Liste des session overtes</button>
+
+</div>
+
+
+
+
+<br>
+
+<pre id="sessionsListing"></pre>
+
+
+<script>
+    $("#userFunctions").hide();
+    userName = "";
+    $("#loading").hide();
+
+
+    async function createUser() {;
+        serverResponse = await $.get('./cmd/newUser' + "/" + $("#username").val().trim())
+
+
+        alert(serverResponse);
+    }
+
+
+    async function login() {
+        userName = $("#username").val().trim();
+        if (/^[a-zA-Z0-9]+$/.test(userName)) {
+            $("#userFunctions").show();
+            $("#login").hide();
+        }
+    }
+
+
+    ipOfNewSession = "";
+
+
+    async function startNewSession() {
+        $("#loading").show();
+        ipOfNewSession = await $.get('./cmd/newSession' + "/" + userName);
+        await alert("la session vas etre lancé . svp pacientz merci");
+
+        window.setInterval(async function() {
+
+            $.get(
+                "./ip/" + ipOfNewSession + "/",
+                function(data, textStatus, jqXHR) {
+
+
+                    window.setInterval(async function() {
+
+
+                        window.location.href = "./ip/" + ipOfNewSession + "/";
+
+
+                    }, 6000);
+
+                    
+                }
+            );
+
+
+
+        }, 2000);
+
+
+
+    }
+
+
+    async function listSessions() {
+        data = await $.get('./cmd/listSessions');
+        $("#sessionsListing").html(data);
+    }
+</script>
